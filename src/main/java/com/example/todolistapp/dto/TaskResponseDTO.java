@@ -1,6 +1,5 @@
-package com.example.todolistapp.entity;
+package com.example.todolistapp.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,15 +8,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
-@Table(name = "tasks")
-public class Task {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+public class TaskResponseDTO {
     private UUID id;
 
     private String title;
@@ -26,7 +21,5 @@ public class Task {
 
     private LocalDate dueDate;
 
-    private boolean isCompleted = Boolean.FALSE;
-
-    private boolean isAvailable;
+    private boolean isCompleted;
 }
