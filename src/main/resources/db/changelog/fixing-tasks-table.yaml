@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Zayats Natalia
+      changes:
+        - renameColumn:
+            tableName: tasks
+            oldColumnName: due_date
+            newColumnName: due_date_time
+            columnDataType: TIMESTAMP WITH TIME ZONE
+        - dropColumn:
+            tableName: tasks
+            columnName: is_completed
+        - addColumn:
+            tableName: tasks
+            columns:
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: 'PENDING'
+                  constraints:
+                    nullable: false
+        - modifyDataType:
+              tableName: tasks
+              columnName: is_available
+              newDataType: BOOLEAN
+        - addDefaultValue:
+              tableName: tasks
+              columnName: is_available
+              defaultValueBoolean: true
