@@ -7,6 +7,7 @@ import com.example.todolistapp.enums.Status;
 import com.example.todolistapp.mapper.TaskMapper;
 import com.example.todolistapp.repository.TaskRepository;
 import com.example.todolistapp.service.TaskService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +25,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponseDTO getTaskById(UUID id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = findTaskById(id);
         return taskMapper.mapToResponseDTO(task);
     }
 
@@ -38,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
+    public UUID createTask(TaskRequestDTO taskRequestDTO) {
         Task task = Task.builder()
                 .id(UUID.randomUUID())
                 .title(taskRequestDTO.getTitle())
@@ -46,14 +46,12 @@ public class TaskServiceImpl implements TaskService {
                 .dueDateTime(taskRequestDTO.getDueDateTime())
                 .status(Status.PENDING)
                 .build();
-        return taskMapper.mapToResponseDTO(taskRepository.save(task));
+        return taskMapper.mapToResponseDTO(taskRepository.save(task)).getId();
     }
 
     @Override
     public TaskResponseDTO updateTask(UUID id, TaskRequestDTO taskRequestDTO) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
-
+        Task task = findTaskById(id);
         task.setTitle(taskRequestDTO.getTitle());
         task.setDescription(taskRequestDTO.getDescription());
         task.setDueDateTime(taskRequestDTO.getDueDateTime());
@@ -63,14 +61,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(UUID id) {
-        taskRepository.deleteById(id);
+        Task task = findTaskById(id);
+        task.setAvailable(false);
     }
 
     @Override
-    public TaskResponseDTO completeTask(UUID id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
-        task.setStatus(Status.COMPLETED);
-        return taskMapper.mapToResponseDTO(taskRepository.save(task));
+    public void completeTask(UUID id) {
+        taskRepository.updateStatus(id, Status.COMPLETED);
+    }
+
+    private Task findTaskById(UUID id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Task " + id + " not found"));
     }
 }
