@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.OffsetDateTime;
@@ -17,10 +18,10 @@ import java.util.UUID;
 public class TaskResponseDTO {
     private UUID id;
 
-    @Max(value = 255)
+    @Size(max = 255)
     private String title;
 
-    @Max(value = 1024)
+    @Size(max = 1024)
     private String description;
 
     @NotNull
@@ -31,5 +32,5 @@ public class TaskResponseDTO {
     private Status status;
 
     @NotNull
-    private boolean isAvailable;
+    private Boolean available;
 }

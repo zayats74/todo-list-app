@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -30,11 +29,11 @@ public class Task {
     private String description;
 
     @Column(name = "due_date_time")
-    private OffsetDateTime dueDateTime;
+    private OffsetDateTime dueDateTime = OffsetDateTime.now();
 
     @Column(name = "status")
     private Status status = Status.PENDING;
 
     @Column(name = "is_available")
-    private boolean isAvailable = true;
+    private Boolean available = true;
 }
