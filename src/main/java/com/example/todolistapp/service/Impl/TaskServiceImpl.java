@@ -3,6 +3,7 @@ package com.example.todolistapp.service.Impl;
 import com.example.todolistapp.dto.TaskRequestDTO;
 import com.example.todolistapp.dto.TaskResponseDTO;
 import com.example.todolistapp.entity.Task;
+import com.example.todolistapp.enums.Status;
 import com.example.todolistapp.mapper.TaskMapper;
 import com.example.todolistapp.repository.TaskRepository;
 import com.example.todolistapp.service.TaskService;
@@ -42,8 +43,8 @@ public class TaskServiceImpl implements TaskService {
                 .id(UUID.randomUUID())
                 .title(taskRequestDTO.getTitle())
                 .description(taskRequestDTO.getDescription())
-                .dueDate(taskRequestDTO.getDueDate())
-                .isCompleted(false)
+                .dueDateTime(taskRequestDTO.getDueDateTime())
+                .status(Status.PENDING)
                 .build();
         return taskMapper.mapToResponseDTO(taskRepository.save(task));
     }
@@ -55,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
 
         task.setTitle(taskRequestDTO.getTitle());
         task.setDescription(taskRequestDTO.getDescription());
-        task.setDueDate(taskRequestDTO.getDueDate());
+        task.setDueDateTime(taskRequestDTO.getDueDateTime());
 
         return taskMapper.mapToResponseDTO(taskRepository.save(task));
     }
@@ -69,7 +70,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDTO completeTask(UUID id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
-        task.setCompleted(true);
+        task.setStatus(Status.COMPLETED);
         return taskMapper.mapToResponseDTO(taskRepository.save(task));
     }
 }

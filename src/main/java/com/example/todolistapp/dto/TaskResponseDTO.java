@@ -1,10 +1,13 @@
 package com.example.todolistapp.dto;
 
+import com.example.todolistapp.enums.Status;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
@@ -21,8 +24,12 @@ public class TaskResponseDTO {
     private String description;
 
     @NotNull
-    private LocalDate dueDate;
+    private OffsetDateTime dueDateTime;
 
     @NotNull
-    private boolean isCompleted;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @NotNull
+    private boolean isAvailable;
 }
