@@ -28,5 +28,5 @@ public class Task {
 
     private boolean isCompleted = Boolean.FALSE;
 
-    private boolean isAvailable;
+    private boolean isAvailable = true;
 }

@@ -1,9 +1,8 @@
 package com.example.todolistapp.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -15,11 +14,15 @@ import java.util.UUID;
 public class TaskResponseDTO {
     private UUID id;
 
+    @Max(value = 255)
     private String title;
 
+    @Max(value = 1024)
     private String description;
 
+    @NotNull
     private LocalDate dueDate;
 
+    @NotNull
     private boolean isCompleted;
 }
