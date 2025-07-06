@@ -2,7 +2,6 @@ package com.example.todolistapp.service.Impl;
 
 import com.example.todolistapp.dto.TaskRequestDTO;
 import com.example.todolistapp.dto.TaskResponseDTO;
-import com.example.todolistapp.dto.TaskUpdateDTO;
 import com.example.todolistapp.entity.Task;
 import com.example.todolistapp.enums.Status;
 import com.example.todolistapp.mapper.TaskMapper;
@@ -50,16 +49,14 @@ public class TaskServiceImpl implements TaskService {
                 .description(taskRequestDTO.getDescription())
                 .dueDateTime(OffsetDateTime.now())
                 .status(Status.PENDING)
-                .available(taskRequestDTO.getAvailable() != null
-                ? taskRequestDTO.getAvailable()
-                : true)
+                .available(true)
                 .build();
         return taskMapper.mapToResponseDTO(taskRepository.save(task)).getId();
     }
 
     @Override
     @Transactional
-    public TaskResponseDTO updateTask(UUID id, TaskUpdateDTO taskRequestDTO) {
+    public TaskResponseDTO updateTask(UUID id, TaskRequestDTO taskRequestDTO) {
         Task task = findTaskById(id);
         task.setTitle(taskRequestDTO.getTitle());
         task.setDescription(taskRequestDTO.getDescription());
