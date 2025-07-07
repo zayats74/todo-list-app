@@ -10,6 +10,7 @@ import com.example.todolistapp.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
@@ -29,12 +31,14 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskResponseDTO getTaskById(UUID id) {
         Task task = findTaskById(id);
+        log.info("Got task {}", task.getId());
         return taskMapper.mapToResponseDTO(task);
     }
 
     @Override
     @Transactional
     public List<TaskResponseDTO> getAllTasks() {
+        log.info("Got all tasks");
         return taskRepository.findAll()
                 .stream()
                 .map(taskMapper::mapToResponseDTO)
@@ -51,7 +55,9 @@ public class TaskServiceImpl implements TaskService {
                 .status(Status.PENDING)
                 .available(true)
                 .build();
-        return taskMapper.mapToResponseDTO(taskRepository.save(task)).getId();
+        task = taskRepository.save(task);
+        log.info("Task {} created", task.getId());
+        return task.getId();
     }
 
     @Override
@@ -60,8 +66,9 @@ public class TaskServiceImpl implements TaskService {
         Task task = findTaskById(id);
         task.setTitle(taskRequestDTO.getTitle());
         task.setDescription(taskRequestDTO.getDescription());
-
-        return taskMapper.mapToResponseDTO(taskRepository.save(task));
+        task = taskRepository.save(task);
+        log.info("Task {} updated", task.getId());
+        return taskMapper.mapToResponseDTO(task);
     }
 
     @Override
@@ -69,17 +76,24 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTask(UUID id) {
         Task task = findTaskById(id);
         task.setAvailable(false);
+        log.info("Task {} deleted", task.getId());
     }
 
     @Override
     @Transactional
     public TaskResponseDTO completeTask(UUID id) {
         taskRepository.updateStatus(id, Status.COMPLETED);
+        log.info("Task {} completed", id);
         return taskMapper.mapToResponseDTO(findTaskById(id));
     }
 
     private Task findTaskById(UUID id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Task " + id + " not found"));
+        try {
+            return taskRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        }
+        catch (EntityNotFoundException ex){
+            log.error("Task {} not found", id);
+            throw ex;
+        }
     }
 }
