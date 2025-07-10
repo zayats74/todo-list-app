@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Table(name = "tasks")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @UuidGenerator
     @Column(name = "id")
     private UUID id;
 
@@ -29,9 +30,10 @@ public class Task {
     private String description;
 
     @Column(name = "due_date_time")
-    private OffsetDateTime dueDateTime = OffsetDateTime.now();
+    private OffsetDateTime dueDateTime;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
 
     @Column(name = "is_available")
