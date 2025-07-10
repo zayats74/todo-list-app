@@ -1,15 +1,13 @@
 package com.example.todolistapp.dto;
 
-import com.example.todolistapp.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
 
 
 @Data
@@ -25,4 +23,6 @@ public class TaskRequestDTO {
     @Schema(description = "Описание задачи", example = "Description of task")
     private String description;
 
+    @Future
+    private OffsetDateTime dueDateTime;
 }
