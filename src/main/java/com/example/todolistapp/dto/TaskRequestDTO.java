@@ -1,6 +1,9 @@
 package com.example.todolistapp.dto;
 
+import com.example.todolistapp.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,4 +28,8 @@ public class TaskRequestDTO {
 
     @Future
     private OffsetDateTime dueDateTime;
+
+    @Schema(description = "Статус задачи", example = "IN_PROGRESS")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }
