@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class TaskController {
 
     @PostMapping
     @Operation(summary = "Добавление задачи", description = "Позволяет добавить задачу")
+    @ResponseStatus(HttpStatus.CREATED)
     public UUID addTask(@RequestBody @Valid TaskRequestDTO task) {
         log.info("POST api/v1/tasks - Creating task");
         return taskService.createTask(task);
@@ -31,6 +33,7 @@ public class TaskController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение задачи", description = "Получение задачи по ID")
+    @ResponseStatus(HttpStatus.OK)
     public TaskResponseDTO getTask(@PathVariable @Parameter(name = "id", description = "ID задачи") UUID id) {
         log.debug("GET /api/v1/tasks/{} - Getting task with ID {}", id, id);
         return taskService.getTaskById(id);
@@ -38,6 +41,7 @@ public class TaskController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Обновление задачи", description = "Обновление задачи по ID")
+    @ResponseStatus(HttpStatus.OK)
     public TaskResponseDTO updateTask(@PathVariable @Parameter(name = "id", description = "ID задачи") UUID id,
                                       @RequestBody @Valid TaskRequestDTO task) {
         log.info("PUT /api/v1/tasks/{} - Updating task with ID {}", id, id);
@@ -46,6 +50,7 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление задачи", description = "Удаление задачи по ID")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable @Parameter(name = "id", description = "ID задачи") UUID id) {
         log.warn("DELETE /api/v1/tasks/{} - Deleting task with ID {}", id, id);
         taskService.deleteTask(id);
@@ -53,12 +58,14 @@ public class TaskController {
 
     @GetMapping
     @Operation(summary = "Получение списка задач", description = "Получение всех имеющихся задач")
+    @ResponseStatus(HttpStatus.OK)
     public List<TaskResponseDTO> getAllTasks() {
         log.debug("GET /api/v1/tasks - Getting all tasks");
         return taskService.getAllTasks();
     }
 
     @PatchMapping("/{id}/complete")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Заверешение задачи", description = "Перевод задачи в статус 'Завершено' по ID")
     public TaskResponseDTO completeTask(@PathVariable @Parameter(name = "id", description = "ID задачи") UUID id) {
         log.info("PATCH /api/v1/tasks/{}/complete - Completing task with ID {}", id, id);
